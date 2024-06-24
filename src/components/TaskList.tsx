@@ -7,6 +7,8 @@ import DeleteTask from './DeleteTask';
 import { MdLogout } from 'react-icons/md';
 import { CgAdd } from 'react-icons/cg';
 import { useUserStore } from '../store';
+import toast from 'react-hot-toast';
+import { BiLoader } from 'react-icons/bi';
 
 interface Task {
   id: string;
@@ -21,6 +23,7 @@ const TasksList: React.FC = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [darkMode, setDarkMode] = useState(() => {
     // Initialize dark mode from local storage or default to false
     const savedDarkMode = localStorage.getItem('darkMode');
@@ -51,6 +54,7 @@ const TasksList: React.FC = () => {
   // Function to fetch tasks from the API
   const fetchTasks = async () => {
     try {
+      setLoading(true)
       const config = {
         withCredentials: true,
         headers: {
@@ -67,14 +71,19 @@ const TasksList: React.FC = () => {
       setTasks(tasksWithStringDates);
     } catch (error) {
       console.error('Error fetching tasks:', error);
+    } finally{
+      setLoading(false)
     }
   };
 
   // Effect to fetch tasks on component mount
-  useLayoutEffect(() => {
+  useEffect(() => {
     fetchTasks();
   }, []);
 
+  if(loading){
+    return <div className='h-dvh w-dvw bg-white dark:bg-slate-950 grid place-items-center'> <BiLoader size={25} className='text-black dark:text-emerald-500 animate-spin'/></div>
+  }
   // Function to handle user logout
   const handleLogout = async () => {
     try {
@@ -85,7 +94,10 @@ const TasksList: React.FC = () => {
         },
       };
 
-      await axios.post(`${import.meta.env.VITE_BACKEND}/api/user/logout`, {}, config);
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND}/api/user/logout`, {}, config);
+      if(response?.data?.message){
+        toast.success(response?.data?.message)
+      }
       setUserId('');
       setTasks([]);
       navigate('/');
@@ -95,7 +107,7 @@ const TasksList: React.FC = () => {
   };
 
   return (
-    <div className={`p-8 dark:bg-slate-950`}> {/* Apply dark mode class */}
+    <div className={`p-8 min-h-dvh dark:bg-slate-950`}> {/* Apply dark mode class */}
       <header className="flex bg-gray-100 dark:bg-gray-800 p-4 shadow-xl rounded-xl justify-between items-center mb-8">
         <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">Task Manager</div>
         <div className="flex items-center gap-4">
@@ -132,7 +144,7 @@ const TasksList: React.FC = () => {
 
             <div className="flex justify-end p-4 bg-gray-100 dark:bg-gray-700">
               <button
-                className="bg-emerald-600 text-white px-6 py-2 rounded-xl hover:bg-emerald-500 mr-2 "
+                className="bg-emerald-600 text-white px-8 py-2 rounded-md hover:bg-emerald-500 mr-2 "
                 onClick={() => {
                   setSelectedTask({ ...task, dueDate: new Date(task.dueDate).toISOString() }); // Ensure dueDate is converted
                   setIsUpdateModalOpen(true);
@@ -141,7 +153,7 @@ const TasksList: React.FC = () => {
                 Edit
               </button>
               <button
-                className="text-white px-6 py-2 bg-gray-600 hover:bg-gray-500 border rounded-xl border-gray-400"
+                className="text-white px-6 py-2 bg-gray-600 hover:bg-gray-500 border rounded-md border-gray-400"
                 onClick={() => {
                   setSelectedTask({ ...task, dueDate: new Date(task.dueDate).toISOString() }); // Ensure dueDate is converted
                   setIsDeleteModalOpen(true);
