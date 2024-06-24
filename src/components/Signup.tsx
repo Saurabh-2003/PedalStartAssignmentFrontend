@@ -51,10 +51,10 @@ const Signup: React.FC = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-800">
       <div className="bg-white dark:bg-gray-900 p-8 rounded shadow-md w-full sm:w-96">
-        <h2 className="text-2xl font-bold mb-8 text-center">Sign Up</h2>
+        <h2 className="text-2xl dark:text-white font-bold mb-8 text-center">Sign Up</h2>
         <form onSubmit={handleSignup} className="space-y-4">
           <div>
-            <label className="block mb-1 font-medium">Name</label>
+            <label className="block dark:text-gray-300 mb-1 font-medium">Name</label>
             <input
               type="text"
               className="w-full px-4 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:border-emerald-600"
@@ -65,7 +65,7 @@ const Signup: React.FC = () => {
             />
           </div>
           <div>
-            <label className="block mb-1 font-medium">Email</label>
+            <label className="block dark:text-gray-300 mb-1 font-medium">Email</label>
             <input
               type="email"
               className="w-full px-4 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:border-emerald-600"
@@ -76,7 +76,7 @@ const Signup: React.FC = () => {
             />
           </div>
           <div>
-            <label className="block mb-1 font-medium">Password</label>
+            <label className="block dark:text-gray-300 mb-1 font-medium">Password</label>
             <input
               type="password"
               className="w-full px-4 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:border-emerald-600"
@@ -87,7 +87,7 @@ const Signup: React.FC = () => {
             />
           </div>
           <div>
-            <label className="block mb-1 font-medium">Confirm Password</label>
+            <label className="block dark:text-gray-300 mb-1 font-medium">Confirm Password</label>
             <input
               type="password"
               className="w-full px-4 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:border-emerald-600"
@@ -107,7 +107,7 @@ const Signup: React.FC = () => {
             </button>
           </div>
         </form>
-        <div className="mt-4 text-center">
+        <div className="mt-4 dark:text-gray-300 text-center">
           <p>
             Already have an account?{' '}
             <button onClick={() => navigate('/')} className="text-emerald-600 hover:underline">
