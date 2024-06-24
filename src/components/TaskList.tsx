@@ -1,14 +1,14 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import CreateTask from './CreateTask';
 import UpdateTask from './UpdateTask';
 import DeleteTask from './DeleteTask';
-import { MdLogout } from 'react-icons/md';
-import { CgAdd } from 'react-icons/cg';
+import { MdDarkMode, MdLogout } from 'react-icons/md';
 import { useUserStore } from '../store';
 import toast from 'react-hot-toast';
 import { BiLoader } from 'react-icons/bi';
+import { LuSun } from 'react-icons/lu';
 
 interface Task {
   id: string;
@@ -50,6 +50,12 @@ const TasksList: React.FC = () => {
     }
   }, [darkMode]);
 
+  useEffect(() => {
+    if(!userId){
+      navigate('/')
+    }
+  }, [])
+
 
   // Function to fetch tasks from the API
   const fetchTasks = async () => {
@@ -87,17 +93,6 @@ const TasksList: React.FC = () => {
   // Function to handle user logout
   const handleLogout = async () => {
     try {
-      const config = {
-        withCredentials: true,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      };
-
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND}/api/user/logout`, {}, config);
-      if(response?.data?.message){
-        toast.success(response?.data?.message)
-      }
       setUserId('');
       setTasks([]);
       navigate('/');
@@ -112,10 +107,16 @@ const TasksList: React.FC = () => {
         <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">Task Manager</div>
         <div className="flex items-center gap-4">
           <button
-            className="hover:bg-emerald-500 text-slate-700 hover:text-white dark:hover:text-white p-2 rounded-full dark:text-slate-500 dark:hover:bg-emerald-600"
+            className="hover:bg-emerald-500 text-slate-700 hover:text-white dark:hover:text-white py-2 border-slate-600 rounded-md border hover:border-emerald-500  px-4 dark:text-slate-500 dark:hover:bg-emerald-600"
             onClick={() => setIsCreateModalOpen(true)}
           >
-            <CgAdd size={25} />
+            Add Task
+          </button>
+          <button
+            className="text-slate-700 px-4 py-2 rounded-xl hover:bg-slate-200 dark:text-white dark:hover:bg-slate-600"
+            onClick={toggleTheme}
+          >
+            {darkMode ? <MdDarkMode className=' text-violet-600' size={25}/> : <LuSun size={25} className=' text-yellow-400' />}
           </button>
           <button
             className="text-slate-700 px-4 py-2 rounded-xl dark:text-slate-500 hover:bg-slate-200 "
@@ -123,13 +124,7 @@ const TasksList: React.FC = () => {
           >
             <MdLogout size={25} />
           </button>
-          {/* Theme toggle button */}
-          <button
-            className="text-slate-700 px-4 py-2 rounded-xl hover:bg-slate-200 dark:text-white dark:hover:bg-slate-600"
-            onClick={toggleTheme}
-          >
-            {darkMode ? 'Light Mode' : 'Dark Mode'}
-          </button>
+          
         </div>
       </header>
 
