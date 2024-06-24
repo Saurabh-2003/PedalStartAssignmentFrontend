@@ -34,7 +34,7 @@ const Signup: React.FC = () => {
           'Content-Type': 'application/json',
         }
       };
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND}/api/signup`,{ name, email, password }, requestOptions);
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND}/api/user/signup`,{ name, email, password }, requestOptions);
 
       if (response.status === 201) {
         setUserId(response.data.userId); // Set userId in global state
