@@ -14,7 +14,8 @@ interface Task {
   id: string;
   title: string;
   description: string;
-  dueDate: string; // Keep it as string
+  dueDate: string; 
+  createdAt: string;
 }
 
 const TasksList: React.FC = () => {
@@ -38,8 +39,7 @@ const TasksList: React.FC = () => {
     setDarkMode(newDarkMode);
     // Save to local storage
     localStorage.setItem('darkMode', JSON.stringify(newDarkMode));
-  }
-
+  };
 
   useEffect(() => {
     const htmlElement = document.documentElement;
@@ -51,16 +51,15 @@ const TasksList: React.FC = () => {
   }, [darkMode]);
 
   useEffect(() => {
-    if(!userId){
-      navigate('/')
+    if (!userId) {
+      navigate('/');
     }
-  }, [])
-
+  }, [userId, navigate]);
 
   // Function to fetch tasks from the API
   const fetchTasks = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       const config = {
         withCredentials: true,
         headers: {
@@ -69,27 +68,32 @@ const TasksList: React.FC = () => {
       };
 
       const response = await axios.post(`${import.meta.env.VITE_BACKEND}/api/task/getall`, { userId }, config);
-      // Ensure dueDate is converted to string when storing in state
-      const tasksWithStringDates = response.data.map((task: any) => ({
+      // Ensure dueDate and createdAt are converted to string when storing in state
+      const tasksWithStringDates = response.data.map((task: Task) => ({
         ...task,
-        dueDate: new Date(task.dueDate).toISOString(), // Convert to ISO string
+        dueDate: new Date(task.dueDate).toISOString(),
+        createdAt: new Date(task.createdAt).toISOString(),
       }));
       setTasks(tasksWithStringDates);
     } catch (error) {
       console.error('Error fetching tasks:', error);
-    } finally{
-      setLoading(false)
+      toast.error('Failed to fetch tasks');
+    } finally {
+      setLoading(false);
     }
   };
 
   // Effect to fetch tasks on component mount
   useEffect(() => {
-    fetchTasks();
-  }, []);
+    if (userId) {
+      fetchTasks();
+    }
+  }, [userId]);
 
-  if(loading){
-    return <div className='h-dvh w-dvw bg-white dark:bg-slate-950 grid place-items-center'> <BiLoader size={25} className='text-black dark:text-emerald-500 animate-spin'/></div>
+  if (loading) {
+    return <div className='h-dvh w-dvw bg-white dark:bg-slate-950 grid place-items-center'> <BiLoader size={25} className='text-black dark:text-emerald-500 animate-spin'/></div>;
   }
+
   // Function to handle user logout
   const handleLogout = async () => {
     try {
@@ -116,32 +120,36 @@ const TasksList: React.FC = () => {
             className="text-slate-700 px-4 py-2 rounded-xl hover:bg-slate-200 dark:text-white dark:hover:bg-slate-600"
             onClick={toggleTheme}
           >
-            {darkMode ? <MdDarkMode className=' text-violet-600' size={25}/> : <LuSun size={25} className=' text-yellow-400' />}
+            {darkMode ? <MdDarkMode className='text-violet-600' size={25}/> : <LuSun size={25} className='text-yellow-400' />}
           </button>
           <button
-            className="text-slate-700 px-4 py-2 rounded-xl dark:text-slate-500 hover:bg-slate-200 "
+            className="text-slate-700 px-4 py-2 rounded-xl dark:text-slate-500 hover:bg-slate-200"
             onClick={handleLogout}
           >
             <MdLogout size={25} />
           </button>
-          
         </div>
       </header>
 
-      <div className="grid gap-6 mt-6 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
+      <div className="gap-6 mt-6 flex flex-col">
         {tasks.map((task) => (
           <div key={task.id} className="bg-white dark:border-slate-500 border dark:bg-gray-800 w-full rounded-lg shadow-lg overflow-hidden">
             <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
               <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">{task.title}</h3>
               <p className="text-gray-600 dark:text-gray-300">{task.description}</p>
               <p className="text-gray-500 dark:text-gray-400 mt-2">Due Date: {new Date(task.dueDate).toLocaleDateString()}</p>
+              <p className="text-gray-500 dark:text-gray-400 mt-2">Created At: {new Date(task.createdAt).toLocaleDateString()}</p>
             </div>
 
             <div className="flex justify-end p-4 bg-gray-100 dark:bg-gray-700">
               <button
-                className="bg-emerald-600 text-white px-8 py-2 rounded-md hover:bg-emerald-500 mr-2 "
+                className="bg-emerald-600 text-white px-8 py-2 rounded-md hover:bg-emerald-500 mr-2"
                 onClick={() => {
-                  setSelectedTask({ ...task, dueDate: new Date(task.dueDate).toISOString() }); // Ensure dueDate is converted
+                  setSelectedTask({ 
+                    ...task, 
+                    dueDate: new Date(task.dueDate).toISOString(), 
+                    createdAt: new Date(task.createdAt).toISOString() 
+                  }); // Ensure dueDate and createdAt are included
                   setIsUpdateModalOpen(true);
                 }}
               >
@@ -150,7 +158,11 @@ const TasksList: React.FC = () => {
               <button
                 className="text-white px-6 py-2 bg-gray-600 hover:bg-gray-500 border rounded-md border-gray-400"
                 onClick={() => {
-                  setSelectedTask({ ...task, dueDate: new Date(task.dueDate).toISOString() }); // Ensure dueDate is converted
+                  setSelectedTask({ 
+                    ...task, 
+                    dueDate: new Date(task.dueDate).toISOString(), 
+                    createdAt: new Date(task.createdAt).toISOString() 
+                  }); // Ensure dueDate and createdAt are included
                   setIsDeleteModalOpen(true);
                 }}
               >

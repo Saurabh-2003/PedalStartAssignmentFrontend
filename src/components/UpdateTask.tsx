@@ -9,6 +9,7 @@ interface UpdateTaskProps {
     title: string;
     description: string;
     dueDate: string;
+    createdAt:string;
   };
   onClose: () => void;
   onUpdate: () => void;
