@@ -3,6 +3,7 @@ import create from 'zustand';
 import { persist } from 'zustand/middleware';
 
 interface Task {
+  createdAt: string | number | Date;
   id: string;
   title: string;
   description: string;

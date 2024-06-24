@@ -9,7 +9,6 @@ const Signup: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean> (false)
   const navigate = useNavigate();
   const setUserId = useUserStore((state) => state.setUserId);
@@ -108,7 +107,6 @@ const Signup: React.FC = () => {
               required
             />
           </div>
-          {error && <p className="text-red-500">{error}</p>}
           <div className="flex items-center justify-between">
             <button
               disabled={loading}

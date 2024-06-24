@@ -10,12 +10,12 @@ import toast from 'react-hot-toast';
 import { BiLoader } from 'react-icons/bi';
 import { LuSun } from 'react-icons/lu';
 
-interface Task {
+type Task =  {
   id: string;
   title: string;
   description: string;
-  dueDate: string; 
   createdAt: string;
+  dueDate: string; 
 }
 
 const TasksList: React.FC = () => {
@@ -71,8 +71,8 @@ const TasksList: React.FC = () => {
       // Ensure dueDate and createdAt are converted to string when storing in state
       const tasksWithStringDates = response.data.map((task: Task) => ({
         ...task,
-        dueDate: new Date(task.dueDate).toISOString(),
         createdAt: new Date(task.createdAt).toISOString(),
+        dueDate: new Date(task.dueDate).toISOString(),
       }));
       setTasks(tasksWithStringDates);
     } catch (error) {
@@ -147,9 +147,9 @@ const TasksList: React.FC = () => {
                 onClick={() => {
                   setSelectedTask({ 
                     ...task, 
+                    createdAt: new Date(task.createdAt).toISOString() ,
                     dueDate: new Date(task.dueDate).toISOString(), 
-                    createdAt: new Date(task.createdAt).toISOString() 
-                  }); // Ensure dueDate and createdAt are included
+                  }); 
                   setIsUpdateModalOpen(true);
                 }}
               >
@@ -160,9 +160,9 @@ const TasksList: React.FC = () => {
                 onClick={() => {
                   setSelectedTask({ 
                     ...task, 
+                    createdAt: new Date(task.createdAt).toISOString() ,
                     dueDate: new Date(task.dueDate).toISOString(), 
-                    createdAt: new Date(task.createdAt).toISOString() 
-                  }); // Ensure dueDate and createdAt are included
+                  }); 
                   setIsDeleteModalOpen(true);
                 }}
               >
